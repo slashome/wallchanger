@@ -1,26 +1,33 @@
 #!/bin/bash
 
-# config
-HOME="/home/fboulestreau"
-WALLPAPERS_PATH="$HOME/perso/pictures/wallpapers"
+# EXPORT BUS ADDRESS IS REQUIRED FOR GSETTINGS IN CRON
+OS=$(lsb_release -si)
+if [ "$OS" == 'Arch' ]
+then
+	echo "Archlinux detected"
+	export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
+elif [ "$OS" == "Ubunutu" ]
+then
+	PID=$(pgrep gnome-session)
+	export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$(PID)/environ|cut -d= -f2-)
+else
+	echo "Your distribution is not supported yet !"
+fi
 
-# CFG_FILE="$HOME/.wallchanger/wallchanger.cfg"
-# . "$CFG_FILE"
+# CONFIGURATION
+HOME="/home/flow"
+WALLPAPERS_PATH="$HOME/Pictures/Wallpapers"
 
 echo "WALLPAPERS PATH : $WALLPAPERS_PATH"
 
-# Export BUS address is required for gsettings in cron
-PID=$(pgrep gnome-session)
-export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ|cut -d= -f2-)
-
-#nombre de fichiers dans le répertoire
-FILE_COUNT=$(find $WALLPAPERS_PATH/* | wc -l)
+# NOMBRE DE FICHIERS DANS LE REPERTOIRE
+FILE_COUNT=$(find $WALLPAPERS_PATH -type f | wc -l)
 echo "Number of files : $FILE_COUNT"
 
-# create wallpapers history if not exist
-HIST_FILE="$HOME/.wallchanger/wallpapers-hitory"
+# CREATE WALLPAERS HISTORY IF NOT EXIST
+HIST_FILE="$HOME/.wallchanger/wallpapers-history"
 
-# If the history file has been delete, we create it
+# IF THE HISTORY FILE HAS BEEN DELETE. WE CREATE IT
 if [ ! -f "$HIST_FILE" ]; then
 	touch "$HIST_FILE"
 fi
@@ -31,15 +38,17 @@ for H in $(cat "$HIST_FILE"); do
     I=$(expr $I + 1)
 done
 
-file=$(find $WALLPAPERS_PATH/* | shuf -n 1)
+file=$(find $WALLPAPERS_PATH -type f | shuf -n 1)
 while [[ " ${HIST_LIST[*]} " == *" $file "* ]]
 do
-	file=$(find $WALLPAPERS_PATH/* | shuf -n 1)
+	file=$(find $WALLPAPERS_PATH -type f | shuf -n 1)
 done
 
 echo "WALLPAPER TO LOAD : $file"
 
-# echo $file
+DISPLAY=:0
+GSETTINGS_BACKEND=dconf
+
 gsettings set org.gnome.desktop.background picture-uri "$file"
 gsettings set org.gnome.desktop.background picture-options zoom
 
