@@ -1,8 +1,13 @@
 #!/bin/bash
 
 # config
-CFG_FILE="$HOME/.wallchanger/wallchanger.cfg"
-. "$CFG_FILE"
+HOME="/home/fboulestreau"
+WALLPAPERS_PATH="$HOME/perso/pictures/wallpapers"
+
+# CFG_FILE="$HOME/.wallchanger/wallchanger.cfg"
+# . "$CFG_FILE"
+
+echo "WALLPAPERS PATH : $WALLPAPERS_PATH"
 
 # Export BUS address is required for gsettings in cron
 PID=$(pgrep gnome-session)
@@ -13,7 +18,7 @@ FILE_COUNT=$(find $WALLPAPERS_PATH/* | wc -l)
 echo "Number of files : $FILE_COUNT"
 
 # create wallpapers history if not exist
-HIST_FILE="./wallpapers-hitory"
+HIST_FILE="$HOME/.wallchanger/wallpapers-hitory"
 
 # If the history file has been delete, we create it
 if [ ! -f "$HIST_FILE" ]; then
@@ -32,18 +37,24 @@ do
 	file=$(find $WALLPAPERS_PATH/* | shuf -n 1)
 done
 
-echo $file
+echo "WALLPAPER TO LOAD : $file"
 
 # echo $file
 gsettings set org.gnome.desktop.background picture-uri "$file"
 gsettings set org.gnome.desktop.background picture-options zoom
 
-echo "$(expr $I + 1)"
-echo "$FILE_COUNT"
+echo "HISTORY COUNT : $(expr $I + 1)"
+echo "TOTAL COUNT   : $FILE_COUNT"
 
 if [ "$(expr $I + 1)" = "$FILE_COUNT" ]
 then
+	echo "ALL WALLPAPER USED > REMOVE HISTORY"
 	rm "$HIST_FILE"
 else
+	echo "ADD CURRENT WALLPAPER TO HISTORY"
 	echo "$file" >> "$HIST_FILE"
 fi
+
+echo ""
+echo " -- "
+echo ""
