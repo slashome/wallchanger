@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exit
+
 # EXPORT BUS ADDRESS IS REQUIRED FOR GSETTINGS IN CRON
 OS=$(lsb_release -si)
 if [ "$OS" == 'Arch' ]
