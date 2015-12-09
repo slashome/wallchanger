@@ -1,4 +1,7 @@
 #!/bin/bash
 
-#
-PATH="/path/to/your/wallpapers/folder"
+# Folder where your precious wallpapers are stored
+WPATH="/path/to/your/wallpapers/folder"
+
+# Number of seconds bewteen two wallpaper changes
+WSLEEP="1"

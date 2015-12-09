@@ -17,6 +17,7 @@ pre_install()
 	echo -e "$G Cloning lastest version $W"
 	git clone https://github.com/ziltoidtheomiscient/wallchanger.git .wallchanger
 	cd .wallchanger
+	mv .wallchangerrc ..
 	rm install.sh
 }
 
