@@ -3,10 +3,11 @@
 PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 DESC="Wallchanger Daemon"
 NAME="wallchanger"
-DAEMON="/home/fboulestreau/.wallchanger/$NAME"
+DAEMON="/home/$HOME/.wallchanger/$NAME"
 DAEMON_ARGS="--options args"
 PIDFILE="/var/run/$NAME.pid"
 SCRIPTNAME="/etc/init.d/$NAME"
+USERNAME="_username_"
 
 test -x $DAEMON || exit 0
 
@@ -20,7 +21,7 @@ d_start () {
 
 d_stop () {
 	log_daemon_msg "Stopping system $DESC"
-	start-stop-daemon --name $daemon_NAME --stop --retry 5 --quiet --name $daemon_NAME
+	start-stop-daemon --name $NAME --stop --retry 5 --quiet --name $NAME
 	log_end_msg $?
 }
 
