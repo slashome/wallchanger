@@ -23,11 +23,11 @@ DAEMONUSER="_username_"
 . /lib/lsb/init-functions
 
 d_start () {
-	start-stop-daemon --background --name $NAME --start --quiet --chuid $DAEMONUSER --exec $DAEMON >> /var/log/wallchanger.log
+	start-stop-daemon --background --name $NAME --start --chuid $DAEMONUSER --exec $DAEMON >> /var/log/wallchanger.log
 }
 
 d_stop () {
-	start-stop-daemon --name $NAME --stop --retry 5 --quiet --name $NAME /var/log/wallchanger.log
+	start-stop-daemon --name $NAME --stop --retry 5 --name $NAME /var/log/wallchanger.log
 }
 
 case "$1" in
