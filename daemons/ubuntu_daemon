@@ -13,7 +13,7 @@
 PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 DESC="Wallchanger Daemon"
 NAME="wallchanger"
-DAEMON="/home/$HOME/.wallchanger/$NAME"
+DAEMON="_userhome_/.wallchanger/$NAME"
 PIDFILE="/var/run/$NAME.pid"
 SCRIPTNAME="/etc/init.d/$NAME"
 DAEMONUSER="_username_"

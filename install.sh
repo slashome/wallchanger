@@ -9,22 +9,22 @@ pre_install()
 {
 	if [ -d "$HOME/.wallchanger" ]
 	then
-		echo -e "$R Remove existing installation $W"
+		echo -e "$R -> Remove existing installation $W"
 		sudo rm -r $HOME/.wallchanger
 	fi
 	cd $HOME
-	echo -e "$G Cloning lastest version $W"
+	echo -e "$G -> Cloning lastest version $W"
 	git clone https://github.com/ziltoidtheomiscient/wallchanger.git .wallchanger
 
 	if [ ! -f "$HOME/.wallchangerrc" ]
 	then
-		echo -e "$G No configuration file found, copy the default one $W"
+		echo -e "$G -> No configuration file found, copy the default one $W"
 		mv $HOME/.wallchanger/.wallchangerrc $HOME
 		rm install.sh
-		echo -e "$B Please edit the configuration file : $W"
+		echo -e "$B -> Please edit the configuration file : $W"
 		$EDITOR $HOME/.wallchangerrc
 	else
-		echo -e "$G Keeping existing configuration file $W"
+		echo -e "$G -> Keeping existing configuration file $W"
 	fi
 }
 
@@ -40,17 +40,19 @@ install_Ubuntu()
 	pre_install
 	if [ -f "/etc/init.d/wallchanger" ]
 	then
-		echo -e "$R Remove existing Daemon $W"
+		echo -e "$R -> Remove existing Daemon $W"
 		sudo /etc/init.d/wallchanger stop
 		sudo update-rc.d -f wallchanger remove
 		sudo rm /etc/init.d/wallchanger
+		echo ""
 	fi
 	sed -i -e "s/_username_/$USER/g" $HOME/.wallchanger/daemons/ubuntu_daemon
+	sed -i -e "s/_userhome_/$HOME/g" $HOME/.wallchanger/daemons/ubuntu_daemon
 	sudo cp "$HOME/.wallchanger/daemons/ubuntu_daemon" "/etc/init.d/wallchanger"
 	sudo chmod 0755 /etc/init.d/wallchanger
-	echo -e "$G Registering wallchanger service $W"
+	echo -e "$G -> Registering wallchanger service $W"
 	sudo update-rc.d wallchanger defaults
-	echo -e "$G Starting the daemon $W"
+	echo -e "$G -> Starting the daemon $W"
 	sudo /etc/init.d/wallchanger start
 	post_install
 }
@@ -67,7 +69,7 @@ if [ "`type -t install_$OS`" = 'function' ]
 then
 	install_$OS
 else
-	echo -e "$R Your distribution is not handled by this installator, you can read the script and install it yourself ;) $W"
+	echo -e "$R -> Your distribution is not handled by this installator, you can read the script and install it yourself ;) $W"
 fi
 
 exit
