@@ -18,16 +18,26 @@ PIDFILE="/var/run/$NAME.pid"
 SCRIPTNAME="/etc/init.d/$NAME"
 DAEMONUSER="_username_"
 
-#test -x $DAEMON || exit 0
+[ -x "$DAEMON" ] || exit 0
 
+. /lib/init/vars.sh
 . /lib/lsb/init-functions
 
 d_start () {
-	start-stop-daemon --background --name $NAME --start --chuid $DAEMONUSER --exec $DAEMON >> /var/log/wallchanger.log
+	start-stop-daemon --start --quiet --chuid $DAEMONUSER \
+	--make-pidfile --pidfile $PIDFILE --background \
+	--exec /bin/bash -- -c "$DAEMON > /var/log/wallchanger.log 2>&1"
+
+	# start-stop-daemon --background --name $NAME \
+	# --start --chuid $DAEMONUSER \
+	# --exec $DAEMON >> /var/log/wallchanger.log
 }
 
 d_stop () {
-	start-stop-daemon --name $NAME --stop --retry 5 --name $NAME /var/log/wallchanger.log
+	start-stop-daemon --stop --quiet --chuid $DAEMONUSER \
+	--pidfile $PIDFILE \
+	--retry 5
+	--exec /bin/bash -- -c "$DAEMON > /var/log/wallchanger.log 2>&1"
 }
 
 case "$1" in
